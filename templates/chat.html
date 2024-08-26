@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .user-message {
+            text-align: right;
+        }
+        .bot-message {
+            text-align: left;
+            background-color: #e9ecef;
+            display: inline-block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-input {
+            display: flex;
+            align-items: center;
+        }
+        .user-input input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        .user-input button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div id="chat-box" class="mb-4"></div>
+
+    <div class="user-input">
+        <input id="user-input" type="text" placeholder="Type your message here..." />
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#send-btn').click(function() {
+            const userInput = $('#user-input').val();
+            if (userInput) {
+                $('#chat-box').append('<div class="message user-message">' + userInput + '</div>');
+                $('#user-input').val('');
+
+                $.ajax({
+                    url: '/get',
+                    method: 'POST',
+                    data: { msg: userInput },
+                    success: function(response) {
+                        $('#chat-box').append('<div class="message bot-message">' + response.response + '</div>');
+                    }
+                });
+            }
+        });
+
+        $('#user-input').keypress(function(e) {
+            if (e.which == 13) {
+                $('#send-btn').click();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
